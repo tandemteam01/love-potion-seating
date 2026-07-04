@@ -3,52 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>THE INMODE ERA</title>
+<title>Love Potion Seating</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial, sans-serif;
-  background:radial-gradient(circle,#1a1a1a,#000);
-  color:#d4af37;
+  background:radial-gradient(circle,#2a1020,#090006);
+  color:#ff8fcb;
   text-align:center;
   padding:60px 20px;
 }
-.small{font-size:14px;color:#aaa;letter-spacing:2px;}
-.big{font-size:48px;font-weight:bold;text-shadow:0 0 20px #d4af37;}
+.small{font-size:14px;color:#ffd6ea;letter-spacing:2px;}
+.big{font-size:48px;font-weight:bold;color:#ff66b3;text-shadow:0 0 22px rgba(255,102,179,.75);}
 .subtitle{color:#fff;margin-bottom:30px;}
 input{
   padding:14px;
   width:320px;
   max-width:85vw;
-  background:#111;
-  border:1px solid #d4af37;
+  background:#16000d;
+  border:1px solid #ff8fcb;
   color:#fff;
   font-size:16px;
 }
 button{
   padding:14px 24px;
-  background:#d4af37;
+  background:#ff8fcb;
   border:none;
+  color:#16000d;
   font-weight:bold;
   cursor:pointer;
 }
-.status{margin-top:15px;color:#fff;opacity:.7;}
+.status{margin-top:15px;color:#fff;opacity:.75;}
 .result{margin-top:40px;}
 .map{display:none;margin-top:40px;}
 .map img{width:95%;max-width:1100px;}
+.item{
+  color:white;
+  font-size:18px;
+  margin:8px auto;
+  padding:10px 14px;
+  max-width:700px;
+  border:1px solid rgba(255,143,203,.35);
+  border-radius:10px;
+}
 </style>
 </head>
 
 <body>
 
 <div class="small">Welcome to</div>
-<div class="big">THE INMODE ERA</div>
-<div class="subtitle">The Dawn of Innovation</div>
+<div class="big">LOVE POTION</div>
+<div class="subtitle">Find Your Seat</div>
 
-<p style="color:white;">Please Enter your Registered name.</p>
+<p style="color:white;">Please enter your registered name, TikTok, or nickname.</p>
 
-<input type="text" id="nameInput" placeholder="Type your name">
+<input type="text" id="nameInput" placeholder="Type at least 2 characters">
 <button onclick="searchSeat()">Search</button>
 
 <div class="status" id="status">
@@ -61,45 +71,69 @@ Your personalized seating information awaits.
 <p style="color:white;">
 Please refer to the seating map below to locate your table.
 </p>
-<img src="seating-map.png">
+<img src="seating-map.png" alt="Seating Map">
 </div>
 
 <script>
-
-const SHEET_ID = "1oDF4vOZ2ZgBPbXgIFSQo1jQpa08nP8S9eVw3duDoNJ0";
+const SHEET_ID = "1BAp5pAAfXoBI_ar4ByCYKbpUKEoeodH6b1qOJva0FrQ";
 const SHEET_NAME = "guests";
 const URL = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
 
 let guests = [];
 
-fetch(URL)
-  .then(res => res.json())
-  .then(data => {
-    guests = data;
-  });
-
 function normalize(str){
   return (str || "").toString().trim().toLowerCase();
 }
 
-function searchSeat(){
+function escapeHtml(str){
+  return (str || "")
+    .toString()
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
 
-  const input = normalize(document.getElementById("nameInput").value);
+fetch(URL)
+  .then(res => res.json())
+  .then(data => {
+    guests = (data || []).map(row => {
+      const tiktok = (row.tiktok || "").toString().trim();
+      const name = (row.name || "").toString().trim();
+      const nickname = (row.nickname || "").toString().trim();
+
+      return {
+        displayName: name || nickname || tiktok,
+        tiktok: tiktok,
+        name: name,
+        nickname: nickname,
+        searchText: normalize(tiktok + " " + name + " " + nickname),
+        table: (row.table || "").toString().trim().toUpperCase(),
+        seat: (row.seat || "").toString().trim()
+      };
+    }).filter(g => g.displayName);
+  })
+  .catch(error => {
+    document.getElementById("status").innerHTML =
+      "Unable to load guest list. Please refresh.";
+    console.log(error);
+  });
+
+function searchSeat(){
+  const q = normalize(document.getElementById("nameInput").value);
   const resultDiv = document.getElementById("result");
   const mapDiv = document.getElementById("map");
 
   resultDiv.innerHTML = "";
   mapDiv.style.display = "none";
 
-  // ✅ เริ่มค้นที่ 2 ตัวอักษร
-  if(input.length < 2){
+  if(q.length < 2){
     resultDiv.innerHTML = "<p style='color:white;'>Please type at least 2 characters.</p>";
     return;
   }
 
-  const results = guests.filter(g =>
-    normalize(g.name).includes(input)
-  );
+  const results = guests.filter(g => g.searchText.includes(q));
 
   if(results.length === 0){
     resultDiv.innerHTML = "<p style='color:white;'>Name not found.</p>";
@@ -107,44 +141,47 @@ function searchSeat(){
   }
 
   if(results.length === 1){
-
     const g = results[0];
 
     resultDiv.innerHTML = `
-      <h2 style="color:white;">Welcome, ${g.name}</h2>
-      <div style="margin-bottom:20px;">to <span style="color:#d4af37;">THE INMODE ERA</span></div>
+      <h2 style="color:white;">Welcome, ${escapeHtml(g.displayName)}</h2>
+      <div style="margin-bottom:20px;color:#ff8fcb;">to LOVE POTION</div>
       <div style="color:white;">Please proceed to</div>
-      <div style="font-size:44px;">TABLE ${g.table}</div>
+      <div style="font-size:44px;color:#ff66b3;">TABLE ${escapeHtml(g.table)}</div>
       <div style="color:white;">Your seat number is</div>
-      <div style="font-size:44px;">${g.seat}</div>
+      <div style="font-size:44px;color:#ff66b3;">${escapeHtml(g.seat)}</div>
     `;
 
     mapDiv.style.display = "block";
-  }
-
-  else{
-
+  } else {
     let html = "<h3 style='color:white;'>Multiple results found:</h3>";
 
-    results.slice(0,30).forEach(g=>{
+    results.slice(0,30).forEach(g => {
       html += `
-      <div style="color:white;font-size:18px;margin:6px 0;">
-      ${g.name} — Table ${g.table} Seat ${g.seat}
-      </div>`;
+        <div class="item">
+          ${escapeHtml(g.displayName)}
+          ${g.nickname ? " / " + escapeHtml(g.nickname) : ""}
+          ${g.tiktok ? " / @" + escapeHtml(g.tiktok.replace("@","")) : ""}
+          <br>
+          <b style="color:#ff8fcb;">TABLE ${escapeHtml(g.table)} · SEAT ${escapeHtml(g.seat)}</b>
+        </div>
+      `;
     });
+
+    if(results.length > 30){
+      html += "<p style='color:white;opacity:.7;'>Showing first 30 matches. Please type more letters to narrow down.</p>";
+    }
 
     resultDiv.innerHTML = html;
   }
 }
 
-// Enter key
-document.getElementById("nameInput")
-.addEventListener("keydown", function(e){
+document.getElementById("nameInput").addEventListener("keydown", function(e){
   if(e.key === "Enter"){
+    e.preventDefault();
     searchSeat();
   }
 });
-
 </script>
 
 </body>
