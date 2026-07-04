@@ -9,141 +9,63 @@
 body{
   margin:0;
   font-family:Arial, sans-serif;
-  background: radial-gradient(circle at top, #f5dddd 0%, #e7cfcf 55%, #d9bcbc 100%);
+  background:radial-gradient(circle at top,#f5dddd 0%,#e7cfcf 55%,#d9bcbc 100%);
   color:#6f3b4b;
   text-align:center;
   padding:60px 20px;
 }
-
-.small{
-  font-size:20px;
-  color:#7b4656;
-  letter-spacing:4px;
-  margin-bottom:10px;
-}
-
+.small{font-size:20px;color:#7b4656;letter-spacing:4px;margin-bottom:10px;}
 .big{
-  font-family:Arial, sans-serif;
+  font-family:Arial,sans-serif;
   font-weight:900;
   font-style:italic;
   font-size:76px;
-  color:#ffffff;
-  text-shadow:
-    0 2px 0 #cfcfcf,
-    0 4px 0 #9f9f9f,
-    0 0 22px rgba(255,255,255,.9);
+  color:#fff;
+  text-shadow:0 2px 0 #cfcfcf,0 4px 0 #9f9f9f,0 0 22px rgba(255,255,255,.9);
   margin:0;
 }
-
 .subtitle{
-  font-family:Georgia, 'Times New Roman', serif;
+  font-family:Georgia,'Times New Roman',serif;
   font-style:italic;
   font-size:38px;
-  color:#ffffff;
+  color:#fff;
   text-shadow:0 4px 16px rgba(120,70,85,.35);
   margin:12px 0 40px;
 }
-
-.prompt{
-  color:#7b4656;
-  font-size:22px;
-  margin-bottom:18px;
-}
-
-.controls{
-  display:flex;
-  justify-content:center;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
+.prompt{color:#7b4656;font-size:22px;margin-bottom:18px;}
+.controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;}
 input{
-  padding:18px;
-  width:520px;
-  max-width:85vw;
-  background:#fffafa;
-  border:1.5px solid #9d5c6d;
-  color:#5e3040;
-  font-size:20px;
-  outline:none;
-  border-radius:4px;
+  padding:18px;width:520px;max-width:85vw;
+  background:#fffafa;border:1.5px solid #9d5c6d;
+  color:#5e3040;font-size:20px;outline:none;border-radius:4px;
 }
-
 button{
   padding:18px 40px;
   background:linear-gradient(135deg,#ff8fcb,#e85d96);
   border:1px solid rgba(255,255,255,.7);
-  color:white;
-  font-weight:bold;
-  font-size:20px;
-  cursor:pointer;
-  border-radius:4px;
+  color:white;font-weight:bold;font-size:20px;cursor:pointer;border-radius:4px;
 }
-
-button:hover{
-  background:linear-gradient(135deg,#ffaad8,#ee6da3);
-}
-
-.status{
-  margin-top:30px;
-  color:#7b4656;
-  font-size:20px;
-  opacity:.9;
-}
-
-.result{
-  margin-top:40px;
-}
-
+.status{margin-top:30px;color:#7b4656;font-size:20px;opacity:.9;}
+.result{margin-top:40px;}
 .item{
-  color:#6f3b4b;
-  font-size:20px;
-  margin:10px auto;
-  padding:14px 18px;
-  max-width:760px;
-  border:1px solid rgba(255,255,255,.65);
-  border-radius:12px;
-  background:rgba(255,255,255,.35);
+  color:#6f3b4b;font-size:20px;margin:10px auto;padding:14px 18px;
+  max-width:760px;border:1px solid rgba(255,255,255,.65);
+  border-radius:12px;background:rgba(255,255,255,.35);
 }
-
-.map{
-  display:none;
-  margin-top:45px;
-}
-
-.map p{
-  color:#7b4656;
-  font-size:18px;
-}
-
-.map img{
-  width:95%;
-  max-width:1100px;
-}
-
+.map{display:none;margin-top:45px;}
+.map p{color:#7b4656;font-size:18px;}
+.map img{width:95%;max-width:1100px;}
 .divider{
-  margin:34px auto 18px;
-  width:220px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:18px;
-  color:#b85c7d;
+  margin:34px auto 18px;width:220px;display:flex;align-items:center;
+  justify-content:center;gap:18px;color:#b85c7d;
 }
-
-.divider:before,
-.divider:after{
-  content:"";
-  height:1px;
-  width:80px;
-  background:#c98da0;
+.divider:before,.divider:after{
+  content:"";height:1px;width:80px;background:#c98da0;
 }
-
 @media(max-width:600px){
   .big{font-size:48px;}
   .subtitle{font-size:28px;}
-  input{width:85vw;}
-  button{width:85vw;}
+  input,button{width:85vw;}
 }
 </style>
 </head>
@@ -170,7 +92,7 @@ Your personalized seating information awaits.
 <div class="result" id="result"></div>
 
 <div class="map" id="map">
-  <p>Please refer to the seating map below to locate your table.</p>
+  <p>Full seating map is provided below for your reference.</p>
   <img src="seating-map.png" alt="Seating Map">
 </div>
 
