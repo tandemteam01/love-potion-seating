@@ -12,18 +12,24 @@ body{
   background:radial-gradient(circle at top,#f5dddd 0%,#e7cfcf 55%,#d9bcbc 100%);
   color:#6f3b4b;
   text-align:center;
-  padding:60px 20px;
+  padding:60px 20px 30px;
 }
 .small{font-size:20px;color:#7b4656;letter-spacing:4px;margin-bottom:10px;}
-.big{
-  font-family:Arial,sans-serif;
-  font-weight:900;
-  font-style:italic;
-  font-size:76px;
-  color:#fff;
-  text-shadow:0 2px 0 #cfcfcf,0 4px 0 #9f9f9f,0 0 22px rgba(255,255,255,.9);
-  margin:0;
+
+.logo-wrap{
+  margin:10px 0 12px;
+  animation:softPop .8s ease;
 }
+.logo{
+  width:min(760px,90vw);
+  height:auto;
+  display:block;
+  margin:auto;
+  filter:
+    drop-shadow(0 4px 18px rgba(255,255,255,.35))
+    drop-shadow(0 12px 30px rgba(0,0,0,.18));
+}
+
 .subtitle{
   font-family:Georgia,'Times New Roman',serif;
   font-style:italic;
@@ -45,14 +51,16 @@ button{
   border:1px solid rgba(255,255,255,.7);
   color:white;font-weight:bold;font-size:20px;cursor:pointer;border-radius:4px;
 }
+button:hover{background:linear-gradient(135deg,#ffaad8,#ee6da3);}
 .status{margin-top:30px;color:#7b4656;font-size:20px;opacity:.9;}
-.result{margin-top:40px;}
+.result{margin-top:40px;animation:fadeIn .45s ease;}
 .item{
   color:#6f3b4b;font-size:20px;margin:10px auto;padding:14px 18px;
   max-width:760px;border:1px solid rgba(255,255,255,.65);
   border-radius:12px;background:rgba(255,255,255,.35);
+  animation:fadeIn .35s ease;
 }
-.map{display:none;margin-top:45px;}
+.map{display:none;margin-top:45px;animation:fadeIn .6s ease;}
 .map p{color:#7b4656;font-size:18px;}
 .map img{width:95%;max-width:1100px;}
 .divider{
@@ -62,8 +70,23 @@ button{
 .divider:before,.divider:after{
   content:"";height:1px;width:80px;background:#c98da0;
 }
+.footer{
+  margin-top:55px;
+  font-size:12px;
+  letter-spacing:2px;
+  color:#7b4656;
+  opacity:.65;
+}
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes softPop{
+  from{opacity:0;transform:scale(.96);}
+  to{opacity:1;transform:scale(1);}
+}
 @media(max-width:600px){
-  .big{font-size:48px;}
+  .logo{width:min(520px,94vw);}
   .subtitle{font-size:28px;}
   input,button{width:85vw;}
 }
@@ -73,13 +96,17 @@ button{
 <body>
 
 <div class="small">Welcome to</div>
-<h1 class="big">Love Potion</h1>
+
+<div class="logo-wrap">
+  <img src="logo%20resize.png" alt="Love Potion" class="logo">
+</div>
+
 <div class="subtitle">The Magic of First Love 2026</div>
 
 <p class="prompt">Please enter your registered name, TikTok, or nickname.</p>
 
 <div class="controls">
-  <input type="text" id="nameInput" placeholder="Type at least 2 characters">
+  <input type="text" id="nameInput" placeholder="Type at least 2 characters" autocomplete="off">
   <button onclick="searchSeat()">Search</button>
 </div>
 
@@ -96,12 +123,15 @@ Your personalized seating information awaits.
   <img src="seating-map.png" alt="Seating Map">
 </div>
 
+<div class="footer">POWERED BY STUDIO TANDEM</div>
+
 <script>
 const SHEET_ID = "1BAp5pAAfXoBI_ar4ByCYKbpUKEoeodH6b1qOJva0FrQ";
 const SHEET_NAME = "guests";
 const URL = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
 
 let guests = [];
+let searchTimer;
 
 function normalize(str){
   return (str || "").toString().trim().toLowerCase();
@@ -115,6 +145,33 @@ function escapeHtml(str){
     .replaceAll(">","&gt;")
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
+}
+
+function levenshtein(a,b){
+  const matrix = [];
+  for(let i=0;i<=b.length;i++){ matrix[i]=[i]; }
+  for(let j=0;j<=a.length;j++){ matrix[0][j]=j; }
+  for(let i=1;i<=b.length;i++){
+    for(let j=1;j<=a.length;j++){
+      matrix[i][j] = b.charAt(i-1) === a.charAt(j-1)
+        ? matrix[i-1][j-1]
+        : Math.min(matrix[i-1][j-1]+1, matrix[i][j-1]+1, matrix[i-1][j]+1);
+    }
+  }
+  return matrix[b.length][a.length];
+}
+
+function fuzzyMatch(query, guest){
+  if(guest.searchText.includes(query)) return true;
+  if(query.length < 4) return false;
+
+  const words = guest.searchText.split(/\s+/).filter(Boolean);
+
+  return words.some(word => {
+    if(word.includes(query) || query.includes(word)) return true;
+    const maxDistance = query.length <= 5 ? 1 : 2;
+    return levenshtein(query, word) <= maxDistance;
+  });
 }
 
 fetch(URL)
@@ -142,6 +199,48 @@ fetch(URL)
     console.log(error);
   });
 
+function renderSingle(g){
+  const resultDiv = document.getElementById("result");
+  const mapDiv = document.getElementById("map");
+
+  resultDiv.innerHTML = `
+    <h2 style="color:#7b4656;font-size:28px;margin-bottom:4px;">Welcome, ${escapeHtml(g.displayName)}</h2>
+    <div style="color:#b85c7d;font-size:22px;margin-bottom:26px;">to Love Potion</div>
+
+    <div style="color:#7b4656;font-size:20px;">Please proceed to</div>
+    <div style="font-size:56px;color:#e85d96;font-weight:bold;margin:8px 0;">TABLE ${escapeHtml(g.table)}</div>
+
+    <div style="color:#7b4656;font-size:20px;">Your seat number is</div>
+    <div style="font-size:56px;color:#e85d96;font-weight:bold;margin-top:8px;">${escapeHtml(g.seat)}</div>
+  `;
+
+  mapDiv.style.display = "block";
+}
+
+function renderMultiple(results){
+  const resultDiv = document.getElementById("result");
+
+  let html = "<h3 style='color:#7b4656;'>Multiple results found:</h3>";
+
+  results.slice(0,30).forEach(g => {
+    html += `
+      <div class="item">
+        ${escapeHtml(g.displayName)}
+        ${g.nickname ? " / " + escapeHtml(g.nickname) : ""}
+        ${g.tiktok ? " / @" + escapeHtml(g.tiktok.replace("@","")) : ""}
+        <br>
+        <b style="color:#e85d96;">TABLE ${escapeHtml(g.table)} · SEAT ${escapeHtml(g.seat)}</b>
+      </div>
+    `;
+  });
+
+  if(results.length > 30){
+    html += "<p style='color:#7b4656;opacity:.7;'>Showing first 30 matches. Please type more letters to narrow down.</p>";
+  }
+
+  resultDiv.innerHTML = html;
+}
+
 function searchSeat(){
   const q = normalize(document.getElementById("nameInput").value);
   const resultDiv = document.getElementById("result");
@@ -155,7 +254,7 @@ function searchSeat(){
     return;
   }
 
-  const results = guests.filter(g => g.searchText.includes(q));
+  const results = guests.filter(g => fuzzyMatch(q, g));
 
   if(results.length === 0){
     resultDiv.innerHTML = "<p style='color:#7b4656;font-size:20px;'>Name not found.</p>";
@@ -163,40 +262,9 @@ function searchSeat(){
   }
 
   if(results.length === 1){
-    const g = results[0];
-
-    resultDiv.innerHTML = `
-      <h2 style="color:#7b4656;font-size:28px;margin-bottom:4px;">Welcome, ${escapeHtml(g.displayName)}</h2>
-      <div style="color:#b85c7d;font-size:22px;margin-bottom:26px;">to Love Potion</div>
-
-      <div style="color:#7b4656;font-size:20px;">Please proceed to</div>
-      <div style="font-size:56px;color:#e85d96;font-weight:bold;margin:8px 0;">TABLE ${escapeHtml(g.table)}</div>
-
-      <div style="color:#7b4656;font-size:20px;">Your seat number is</div>
-      <div style="font-size:56px;color:#e85d96;font-weight:bold;margin-top:8px;">${escapeHtml(g.seat)}</div>
-    `;
-
-    mapDiv.style.display = "block";
+    renderSingle(results[0]);
   } else {
-    let html = "<h3 style='color:#7b4656;'>Multiple results found:</h3>";
-
-    results.slice(0,30).forEach(g => {
-      html += `
-        <div class="item">
-          ${escapeHtml(g.displayName)}
-          ${g.nickname ? " / " + escapeHtml(g.nickname) : ""}
-          ${g.tiktok ? " / @" + escapeHtml(g.tiktok.replace("@","")) : ""}
-          <br>
-          <b style="color:#e85d96;">TABLE ${escapeHtml(g.table)} · SEAT ${escapeHtml(g.seat)}</b>
-        </div>
-      `;
-    });
-
-    if(results.length > 30){
-      html += "<p style='color:#7b4656;opacity:.7;'>Showing first 30 matches. Please type more letters to narrow down.</p>";
-    }
-
-    resultDiv.innerHTML = html;
+    renderMultiple(results);
   }
 }
 
@@ -205,6 +273,19 @@ document.getElementById("nameInput").addEventListener("keydown", function(e){
     e.preventDefault();
     searchSeat();
   }
+});
+
+document.getElementById("nameInput").addEventListener("input", function(){
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    const q = normalize(document.getElementById("nameInput").value);
+    if(q.length >= 2){
+      searchSeat();
+    } else {
+      document.getElementById("result").innerHTML = "";
+      document.getElementById("map").style.display = "none";
+    }
+  }, 300);
 });
 </script>
 
