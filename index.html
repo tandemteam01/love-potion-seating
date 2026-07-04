@@ -9,43 +9,141 @@
 body{
   margin:0;
   font-family:Arial, sans-serif;
-  background:radial-gradient(circle,#2a1020,#090006);
-  color:#ff8fcb;
+  background: radial-gradient(circle at top, #f5dddd 0%, #e7cfcf 55%, #d9bcbc 100%);
+  color:#6f3b4b;
   text-align:center;
   padding:60px 20px;
 }
-.small{font-size:14px;color:#ffd6ea;letter-spacing:2px;}
-.big{font-size:48px;font-weight:bold;color:#ff66b3;text-shadow:0 0 22px rgba(255,102,179,.75);}
-.subtitle{color:#fff;margin-bottom:30px;}
+
+.small{
+  font-size:20px;
+  color:#7b4656;
+  letter-spacing:4px;
+  margin-bottom:10px;
+}
+
+.big{
+  font-family:Arial, sans-serif;
+  font-weight:900;
+  font-style:italic;
+  font-size:76px;
+  color:#ffffff;
+  text-shadow:
+    0 2px 0 #cfcfcf,
+    0 4px 0 #9f9f9f,
+    0 0 22px rgba(255,255,255,.9);
+  margin:0;
+}
+
+.subtitle{
+  font-family:Georgia, 'Times New Roman', serif;
+  font-style:italic;
+  font-size:38px;
+  color:#ffffff;
+  text-shadow:0 4px 16px rgba(120,70,85,.35);
+  margin:12px 0 40px;
+}
+
+.prompt{
+  color:#7b4656;
+  font-size:22px;
+  margin-bottom:18px;
+}
+
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
 input{
-  padding:14px;
-  width:320px;
+  padding:18px;
+  width:520px;
   max-width:85vw;
-  background:#16000d;
-  border:1px solid #ff8fcb;
-  color:#fff;
-  font-size:16px;
+  background:#fffafa;
+  border:1.5px solid #9d5c6d;
+  color:#5e3040;
+  font-size:20px;
+  outline:none;
+  border-radius:4px;
 }
+
 button{
-  padding:14px 24px;
-  background:#ff8fcb;
-  border:none;
-  color:#16000d;
-  font-weight:bold;
-  cursor:pointer;
-}
-.status{margin-top:15px;color:#fff;opacity:.75;}
-.result{margin-top:40px;}
-.map{display:none;margin-top:40px;}
-.map img{width:95%;max-width:1100px;}
-.item{
+  padding:18px 40px;
+  background:linear-gradient(135deg,#ff8fcb,#e85d96);
+  border:1px solid rgba(255,255,255,.7);
   color:white;
+  font-weight:bold;
+  font-size:20px;
+  cursor:pointer;
+  border-radius:4px;
+}
+
+button:hover{
+  background:linear-gradient(135deg,#ffaad8,#ee6da3);
+}
+
+.status{
+  margin-top:30px;
+  color:#7b4656;
+  font-size:20px;
+  opacity:.9;
+}
+
+.result{
+  margin-top:40px;
+}
+
+.item{
+  color:#6f3b4b;
+  font-size:20px;
+  margin:10px auto;
+  padding:14px 18px;
+  max-width:760px;
+  border:1px solid rgba(255,255,255,.65);
+  border-radius:12px;
+  background:rgba(255,255,255,.35);
+}
+
+.map{
+  display:none;
+  margin-top:45px;
+}
+
+.map p{
+  color:#7b4656;
   font-size:18px;
-  margin:8px auto;
-  padding:10px 14px;
-  max-width:700px;
-  border:1px solid rgba(255,143,203,.35);
-  border-radius:10px;
+}
+
+.map img{
+  width:95%;
+  max-width:1100px;
+}
+
+.divider{
+  margin:34px auto 18px;
+  width:220px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  color:#b85c7d;
+}
+
+.divider:before,
+.divider:after{
+  content:"";
+  height:1px;
+  width:80px;
+  background:#c98da0;
+}
+
+@media(max-width:600px){
+  .big{font-size:48px;}
+  .subtitle{font-size:28px;}
+  input{width:85vw;}
+  button{width:85vw;}
 }
 </style>
 </head>
@@ -53,13 +151,17 @@ button{
 <body>
 
 <div class="small">Welcome to</div>
-<div class="big">LOVE POTION</div>
-<div class="subtitle">Find Your Seat</div>
+<h1 class="big">Love Potion</h1>
+<div class="subtitle">The Magic of First Love 2026</div>
 
-<p style="color:white;">Please enter your registered name, TikTok, or nickname.</p>
+<p class="prompt">Please enter your registered name, TikTok, or nickname.</p>
 
-<input type="text" id="nameInput" placeholder="Type at least 2 characters">
-<button onclick="searchSeat()">Search</button>
+<div class="controls">
+  <input type="text" id="nameInput" placeholder="Type at least 2 characters">
+  <button onclick="searchSeat()">Search</button>
+</div>
+
+<div class="divider">✦</div>
 
 <div class="status" id="status">
 Your personalized seating information awaits.
@@ -68,10 +170,8 @@ Your personalized seating information awaits.
 <div class="result" id="result"></div>
 
 <div class="map" id="map">
-<p style="color:white;">
-Please refer to the seating map below to locate your table.
-</p>
-<img src="seating-map.png" alt="Seating Map">
+  <p>Please refer to the seating map below to locate your table.</p>
+  <img src="seating-map.png" alt="Seating Map">
 </div>
 
 <script>
@@ -105,9 +205,9 @@ fetch(URL)
 
       return {
         displayName: name || nickname || tiktok,
-        tiktok: tiktok,
-        name: name,
-        nickname: nickname,
+        tiktok,
+        name,
+        nickname,
         searchText: normalize(tiktok + " " + name + " " + nickname),
         table: (row.table || "").toString().trim().toUpperCase(),
         seat: (row.seat || "").toString().trim()
@@ -129,14 +229,14 @@ function searchSeat(){
   mapDiv.style.display = "none";
 
   if(q.length < 2){
-    resultDiv.innerHTML = "<p style='color:white;'>Please type at least 2 characters.</p>";
+    resultDiv.innerHTML = "<p style='color:#7b4656;font-size:20px;'>Please type at least 2 characters.</p>";
     return;
   }
 
   const results = guests.filter(g => g.searchText.includes(q));
 
   if(results.length === 0){
-    resultDiv.innerHTML = "<p style='color:white;'>Name not found.</p>";
+    resultDiv.innerHTML = "<p style='color:#7b4656;font-size:20px;'>Name not found.</p>";
     return;
   }
 
@@ -144,17 +244,19 @@ function searchSeat(){
     const g = results[0];
 
     resultDiv.innerHTML = `
-      <h2 style="color:white;">Welcome, ${escapeHtml(g.displayName)}</h2>
-      <div style="margin-bottom:20px;color:#ff8fcb;">to LOVE POTION</div>
-      <div style="color:white;">Please proceed to</div>
-      <div style="font-size:44px;color:#ff66b3;">TABLE ${escapeHtml(g.table)}</div>
-      <div style="color:white;">Your seat number is</div>
-      <div style="font-size:44px;color:#ff66b3;">${escapeHtml(g.seat)}</div>
+      <h2 style="color:#7b4656;font-size:28px;margin-bottom:4px;">Welcome, ${escapeHtml(g.displayName)}</h2>
+      <div style="color:#b85c7d;font-size:22px;margin-bottom:26px;">to Love Potion</div>
+
+      <div style="color:#7b4656;font-size:20px;">Please proceed to</div>
+      <div style="font-size:56px;color:#e85d96;font-weight:bold;margin:8px 0;">TABLE ${escapeHtml(g.table)}</div>
+
+      <div style="color:#7b4656;font-size:20px;">Your seat number is</div>
+      <div style="font-size:56px;color:#e85d96;font-weight:bold;margin-top:8px;">${escapeHtml(g.seat)}</div>
     `;
 
     mapDiv.style.display = "block";
   } else {
-    let html = "<h3 style='color:white;'>Multiple results found:</h3>";
+    let html = "<h3 style='color:#7b4656;'>Multiple results found:</h3>";
 
     results.slice(0,30).forEach(g => {
       html += `
@@ -163,13 +265,13 @@ function searchSeat(){
           ${g.nickname ? " / " + escapeHtml(g.nickname) : ""}
           ${g.tiktok ? " / @" + escapeHtml(g.tiktok.replace("@","")) : ""}
           <br>
-          <b style="color:#ff8fcb;">TABLE ${escapeHtml(g.table)} · SEAT ${escapeHtml(g.seat)}</b>
+          <b style="color:#e85d96;">TABLE ${escapeHtml(g.table)} · SEAT ${escapeHtml(g.seat)}</b>
         </div>
       `;
     });
 
     if(results.length > 30){
-      html += "<p style='color:white;opacity:.7;'>Showing first 30 matches. Please type more letters to narrow down.</p>";
+      html += "<p style='color:#7b4656;opacity:.7;'>Showing first 30 matches. Please type more letters to narrow down.</p>";
     }
 
     resultDiv.innerHTML = html;
