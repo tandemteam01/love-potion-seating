@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Love Potion Seating</title>
+
+<style>
+:root{
+  --bg-1:#f8e4e4;
+  --bg-2:#e7cfcf;
+  --bg-3:#d8b9bd;
+  --text:#6f3b4b;
+  --text-soft:#7b4656;
+  --pink:#e85d96;
+  --pink-soft:#ff8fcb;
+  --white:#ffffff;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:
+    radial-gradient(circle at top, var(--bg-1) 0%, var(--bg-2) 52%, var(--bg-3) 100%);
+  color:var(--text);
+  text-align:center;
+  padding:58px 18px 32px;
+  min-height:100vh;
+}
+
+.page{
+  max-width:1180px;
+  margin:0 auto;
+}
+
+.small{
+  font-size:20px;
+  color:var(--text-soft);
+  letter-spacing:4px;
+  margin-bottom:10px;
+  animation:fadeIn .45s ease;
+}
+
+.logo-wrap{
+  margin:10px auto 12px;
+  animation:softPop .75s ease;
+}
+
+.logo{
+  width:min(760px,90vw);
+  height:auto;
+  display:block;
+  margin:auto;
+  filter:
+    drop-shadow(0 4px 18px rgba(255,255,255,.4))
+    drop-shadow(0 12px 30px rgba(80,35,48,.18));
+}
+
+.subtitle{
+  font-family:Georgia, 'Times New Roman', serif;
+  font-style:italic;
+  font-size:38px;
+  color:var(--white);
+  text-shadow:0 4px 16px rgba(120,70,85,.35);
+  margin:12px 0 40px;
+  animation:fadeIn .65s ease;
+}
+
+.prompt{
+  color:var(--text-soft);
+  font-size:22px;
+  margin:0 0 18px;
+}
+
+.controls{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+input{
+  padding:18px;
+  width:520px;
+  max-width:85vw;
+  background:#fffafa;
+  border:1.5px solid #9d5c6d;
+  color:#5e3040;
+  font-size:20px;
+  outline:none;
+  border-radius:6px;
+  box-shadow:0 8px 24px rgba(120,70,85,.12);
+}
+
+input::placeholder{
+  color:#b48191;
+}
+
+button{
+  padding:18px 40px;
+  background:linear-gradient(135deg,var(--pink-soft),var(--pink));
+  border:1px solid rgba(255,255,255,.7);
+  color:white;
+  font-weight:bold;
+  font-size:20px;
+  cursor:pointer;
+  border-radius:6px;
+  box-shadow:0 10px 24px rgba(232,93,150,.2);
+}
+
+button:hover{
+  background:linear-gradient(135deg,#ffaad8,#ee6da3);
+}
+
+.divider{
+  margin:34px auto 18px;
+  width:220px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  color:#b85c7d;
+}
+
+.divider:before,
+.divider:after{
+  content:"";
+  height:1px;
+  width:80px;
+  background:#c98da0;
+}
+
+.status{
+  margin-top:30px;
+  color:var(--text-soft);
+  font-size:20px;
+  opacity:.88;
+  min-height:24px;
+}
+
+.result{
+  margin-top:40px;
+  animation:fadeIn .45s ease;
+}
+
+.single-card{
+  animation:risePop .45s ease;
+}
+
+.welcome{
+  color:var(--text-soft);
+  font-size:28px;
+  line-height:1.35;
+  margin:0 0 4px;
+  font-weight:700;
+}
+
+.to-event{
+  color:#b85c7d;
+  font-size:22px;
+  margin-bottom:26px;
+}
+
+.label{
+  color:var(--text-soft);
+  font-size:20px;
+}
+
+.table-display,
+.seat-display{
+  font-size:56px;
+  color:var(--pink);
+  font-weight:900;
+  margin:8px 0;
+  text-shadow:0 6px 18px rgba(232,93,150,.18);
+}
+
+.item{
+  color:var(--text);
+  font-size:20px;
+  margin:10px auto;
+  padding:14px 18px;
+  max-width:760px;
+  border:1px solid rgba(255,255,255,.7);
+  border-radius:12px;
+  background:rgba(255,255,255,.35);
+  animation:fadeIn .35s ease;
+  box-shadow:0 8px 24px rgba(120,70,85,.08);
+}
+
+.map{
+  display:none;
+  margin-top:45px;
+  animation:fadeIn .6s ease;
+}
+
+.map.show{
+  display:block;
+}
+
+.map p{
+  color:var(--text-soft);
+  font-size:18px;
+  margin-bottom:18px;
+}
+
+.map img{
+  width:95%;
+  max-width:1100px;
+  height:auto;
+  display:block;
+  margin:auto;
+}
+
+.footer{
+  margin-top:70px;
+  color:var(--text-soft);
+  opacity:.78;
+}
+
+.footer-main{
+  font-size:18px;
+  font-weight:bold;
+  letter-spacing:3px;
+}
+
+.footer-sub{
+  margin-top:8px;
+  font-size:12px;
+  letter-spacing:2px;
+  opacity:.72;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+@keyframes softPop{
+  from{opacity:0;transform:scale(.96);}
+  to{opacity:1;transform:scale(1);}
+}
+
+@keyframes risePop{
+  from{opacity:0;transform:translateY(14px) scale(.98);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+
+@media(max-width:600px){
+  body{
+    padding:44px 14px 28px;
+  }
+  .small{
+    font-size:16px;
+  }
+  .logo{
+    width:min(520px,94vw);
+  }
+  .subtitle{
+    font-size:27px;
+    margin-bottom:30px;
+  }
+  .prompt{
+    font-size:18px;
+  }
+  input, button{
+    width:86vw;
+    font-size:18px;
+  }
+  .welcome{
+    font-size:23px;
+  }
+  .table-display,
+  .seat-display{
+    font-size:48px;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="page">
+
+  <div class="small">Welcome to</div>
+
+  <div class="logo-wrap">
+    <img src="logo%20resize.png" alt="Love Potion" class="logo">
+  </div>
+
+  <div class="subtitle">The Magic of First Love 2026</div>
+
+  <p class="prompt">Please enter your registered name, TikTok, or nickname.</p>
+
+  <div class="controls">
+    <input type="text" id="nameInput" placeholder="Type at least 2 characters" autocomplete="off">
+    <button onclick="searchSeat()">Search</button>
+  </div>
+
+  <div class="divider">✦</div>
+
+  <div class="status" id="status">Your personalized seating information awaits.</div>
+
+  <div class="result" id="result"></div>
+
+  <div class="map" id="map">
+    <p>Full seating map is provided below for your reference.</p>
+    <img src="seating-map.png" alt="Seating Map">
+  </div>
+
+  <div class="footer">
+    <div class="footer-main">SCAN YOUR SEAT</div>
+    <div class="footer-sub">Created by STUDIO TANDEM</div>
+  </div>
+
+</div>
+
+<script>
+const SHEET_ID = "1BAp5pAAfXoBI_ar4ByCYKbpUKEoeodH6b1qOJva0FrQ";
+const SHEET_NAME = "guests";
+const URL = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
+
+let guests = [];
+let searchTimer;
+let lastRenderedQuery = "";
+
+const inputEl = document.getElementById("nameInput");
+const resultEl = document.getElementById("result");
+const mapEl = document.getElementById("map");
+const statusEl = document.getElementById("status");
+
+function normalize(str){
+  return (str || "").toString().trim().toLowerCase();
+}
+
+function escapeHtml(str){
+  return (str || "")
+    .toString()
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function levenshtein(a,b){
+  const matrix = [];
+  for(let i=0;i<=b.length;i++){ matrix[i]=[i]; }
+  for(let j=0;j<=a.length;j++){ matrix[0][j]=j; }
+
+  for(let i=1;i<=b.length;i++){
+    for(let j=1;j<=a.length;j++){
+      matrix[i][j] = b.charAt(i-1) === a.charAt(j-1)
+        ? matrix[i-1][j-1]
+        : Math.min(
+            matrix[i-1][j-1] + 1,
+            matrix[i][j-1] + 1,
+            matrix[i-1][j] + 1
+          );
+    }
+  }
+  return matrix[b.length][a.length];
+}
+
+function fuzzyMatch(query, guest){
+  if(guest.searchText.includes(query)) return true;
+  if(query.length < 4) return false;
+
+  const words = guest.searchText.split(/\s+/).filter(Boolean);
+
+  return words.some(word => {
+    if(word.includes(query) || query.includes(word)) return true;
+    const maxDistance = query.length <= 5 ? 1 : 2;
+    return levenshtein(query, word) <= maxDistance;
+  });
+}
+
+fetch(URL)
+  .then(res => res.json())
+  .then(data => {
+    guests = (data || []).map(row => {
+      const tiktok = (row.tiktok || "").toString().trim();
+      const name = (row.name || "").toString().trim();
+      const nickname = (row.nickname || "").toString().trim();
+
+      return {
+        displayName: name || nickname || tiktok,
+        tiktok,
+        name,
+        nickname,
+        searchText: normalize(tiktok + " " + name + " " + nickname),
+        table: (row.table || "").toString().trim().toUpperCase(),
+        seat: (row.seat || "").toString().trim()
+      };
+    }).filter(g => g.displayName);
+  })
+  .catch(error => {
+    statusEl.innerHTML = "Unable to load guest list. Please refresh.";
+    console.log(error);
+  });
+
+function clearResult(){
+  resultEl.innerHTML = "";
+  mapEl.classList.remove("show");
+}
+
+function renderSingle(g){
+  const welcomeName = g.nickname
+    ? `${escapeHtml(g.displayName)}, ${escapeHtml(g.nickname)}`
+    : escapeHtml(g.displayName);
+
+  resultEl.innerHTML = `
+    <div class="single-card">
+      <h2 class="welcome">Welcome, ${welcomeName}</h2>
+      <div class="to-event">to Love Potion</div>
+
+      <div class="label">Please proceed to</div>
+      <div class="table-display">TABLE ${escapeHtml(g.table)}</div>
+
+      <div class="label">Your seat number is</div>
+      <div class="seat-display">${escapeHtml(g.seat)}</div>
+    </div>
+  `;
+
+  mapEl.classList.add("show");
+}
+
+function renderMultiple(results){
+  let html = "<h3 style='color:#7b4656;'>Multiple results found:</h3>";
+
+  results.slice(0,30).forEach(g => {
+    html += `
+      <div class="item">
+        ${escapeHtml(g.displayName)}
+        ${g.nickname ? " / " + escapeHtml(g.nickname) : ""}
+        ${g.tiktok ? " / @" + escapeHtml(g.tiktok.replace("@","")) : ""}
+        <br>
+        <b style="color:#e85d96;">TABLE ${escapeHtml(g.table)} · SEAT ${escapeHtml(g.seat)}</b>
+      </div>
+    `;
+  });
+
+  if(results.length > 30){
+    html += "<p style='color:#7b4656;opacity:.7;'>Showing first 30 matches. Please type more letters to narrow down.</p>";
+  }
+
+  resultEl.innerHTML = html;
+}
+
+function searchSeat(){
+  const q = normalize(inputEl.value);
+
+  if(q === lastRenderedQuery && q.length >= 2) return;
+  lastRenderedQuery = q;
+
+  clearResult();
+
+  if(q.length < 2){
+    if(q.length > 0){
+      resultEl.innerHTML = "<p style='color:#7b4656;font-size:20px;'>Please type at least 2 characters.</p>";
+    }
+    return;
+  }
+
+  const results = guests.filter(g => fuzzyMatch(q, g));
+
+  if(results.length === 0){
+    resultEl.innerHTML = "<p style='color:#7b4656;font-size:20px;'>Name not found.</p>";
+    return;
+  }
+
+  if(results.length === 1){
+    renderSingle(results[0]);
+  }else{
+    renderMultiple(results);
+  }
+}
+
+inputEl.addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    e.preventDefault();
+    lastRenderedQuery = "";
+    searchSeat();
+  }
+});
+
+inputEl.addEventListener("input", function(){
+  clearTimeout(searchTimer);
+  lastRenderedQuery = "";
+
+  searchTimer = setTimeout(() => {
+    const q = normalize(inputEl.value);
+    if(q.length >= 2){
+      searchSeat();
+    }else{
+      clearResult();
+    }
+  }, 300);
+});
+</script>
+
+</body>
+</html>
