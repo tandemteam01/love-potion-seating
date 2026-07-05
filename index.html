@@ -15,21 +15,14 @@ body{
   padding:60px 20px 30px;
 }
 .small{font-size:20px;color:#7b4656;letter-spacing:4px;margin-bottom:10px;}
-
-.logo-wrap{
-  margin:10px 0 12px;
-  animation:softPop .8s ease;
-}
+.logo-wrap{margin:10px 0 12px;animation:softPop .8s ease;}
 .logo{
   width:min(760px,90vw);
   height:auto;
   display:block;
   margin:auto;
-  filter:
-    drop-shadow(0 4px 18px rgba(255,255,255,.35))
-    drop-shadow(0 12px 30px rgba(0,0,0,.18));
+  filter:drop-shadow(0 4px 18px rgba(255,255,255,.35)) drop-shadow(0 12px 30px rgba(0,0,0,.18));
 }
-
 .subtitle{
   font-family:Georgia,'Times New Roman',serif;
   font-style:italic;
@@ -51,14 +44,12 @@ button{
   border:1px solid rgba(255,255,255,.7);
   color:white;font-weight:bold;font-size:20px;cursor:pointer;border-radius:4px;
 }
-button:hover{background:linear-gradient(135deg,#ffaad8,#ee6da3);}
 .status{margin-top:30px;color:#7b4656;font-size:20px;opacity:.9;}
 .result{margin-top:40px;animation:fadeIn .45s ease;}
 .item{
   color:#6f3b4b;font-size:20px;margin:10px auto;padding:14px 18px;
   max-width:760px;border:1px solid rgba(255,255,255,.65);
   border-radius:12px;background:rgba(255,255,255,.35);
-  animation:fadeIn .35s ease;
 }
 .map{display:none;margin-top:45px;animation:fadeIn .6s ease;}
 .map p{color:#7b4656;font-size:18px;}
@@ -67,24 +58,10 @@ button:hover{background:linear-gradient(135deg,#ffaad8,#ee6da3);}
   margin:34px auto 18px;width:220px;display:flex;align-items:center;
   justify-content:center;gap:18px;color:#b85c7d;
 }
-.divider:before,.divider:after{
-  content:"";height:1px;width:80px;background:#c98da0;
-}
-.footer{
-  margin-top:55px;
-  font-size:12px;
-  letter-spacing:2px;
-  color:#7b4656;
-  opacity:.65;
-}
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(10px);}
-  to{opacity:1;transform:translateY(0);}
-}
-@keyframes softPop{
-  from{opacity:0;transform:scale(.96);}
-  to{opacity:1;transform:scale(1);}
-}
+.divider:before,.divider:after{content:"";height:1px;width:80px;background:#c98da0;}
+.footer{margin-top:55px;font-size:12px;letter-spacing:2px;color:#7b4656;opacity:.65;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@keyframes softPop{from{opacity:0;transform:scale(.96);}to{opacity:1;transform:scale(1);}}
 @media(max-width:600px){
   .logo{width:min(520px,94vw);}
   .subtitle{font-size:28px;}
@@ -112,10 +89,7 @@ button:hover{background:linear-gradient(135deg,#ffaad8,#ee6da3);}
 
 <div class="divider">✦</div>
 
-<div class="status" id="status">
-Your personalized seating information awaits.
-</div>
-
+<div class="status" id="status">Your personalized seating information awaits.</div>
 <div class="result" id="result"></div>
 
 <div class="map" id="map">
@@ -203,8 +177,12 @@ function renderSingle(g){
   const resultDiv = document.getElementById("result");
   const mapDiv = document.getElementById("map");
 
+  const welcomeName = g.nickname
+    ? `${escapeHtml(g.displayName)}, ${escapeHtml(g.nickname)}`
+    : escapeHtml(g.displayName);
+
   resultDiv.innerHTML = `
-    <h2 style="color:#7b4656;font-size:28px;margin-bottom:4px;">Welcome, ${escapeHtml(g.displayName)}</h2>
+    <h2 style="color:#7b4656;font-size:28px;margin-bottom:4px;">Welcome, ${welcomeName}</h2>
     <div style="color:#b85c7d;font-size:22px;margin-bottom:26px;">to Love Potion</div>
 
     <div style="color:#7b4656;font-size:20px;">Please proceed to</div>
